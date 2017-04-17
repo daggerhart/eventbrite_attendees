@@ -1,0 +1,17 @@
+{#
+=Attendee data=
+
+profile:
+    website
+    first_name
+    last_name
+    addresses
+    company
+    email
+    name
+#}
+<ul class="eventbrite-attendees">
+{% for attendee in attendees %}
+    <li><span class="name">{{ attendee.profile.first_name }}</span></li>
+{% endfor %}
+</ul>

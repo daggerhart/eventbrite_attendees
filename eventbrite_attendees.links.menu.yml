@@ -1,0 +1,6 @@
+eventbrite_attendees.admin:
+  title: 'Eventbrite Attendees settings'
+  description: 'Manage Eventbrite Attendees settings for your site'
+  parent: system.admin_config_services
+  route_name: eventbrite_attendees.settings
+  menu_name: admin

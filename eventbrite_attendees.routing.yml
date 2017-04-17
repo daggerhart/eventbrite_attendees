@@ -1,0 +1,7 @@
+eventbrite_attendees.settings:
+  path: '/admin/config/services/eventbrite_attendees'
+  defaults:
+    _form: '\Drupal\eventbrite_attendees\Form\settingsForm'
+    _title: 'Eventbrite Attendees Settings'
+  requirements:
+    _permission: 'administer site configuration'

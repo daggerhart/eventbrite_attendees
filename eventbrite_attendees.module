@@ -1,0 +1,17 @@
+<?php
+
+/**
+ * Implements hook_theme()
+ *
+ * @return array
+ */
+function eventbrite_attendees_theme(){
+  return array(
+    'eventbrite_attendees' => array(
+      'variables' => array(
+        'attendees' => []
+      ),
+      'pattern' => 'eventbrite_attendees__',
+    ),
+  );
+}
