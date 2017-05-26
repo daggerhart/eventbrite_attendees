@@ -89,7 +89,7 @@ class EventbriteAttendees extends BlockBase implements BlockPluginInterface
     $form['template_suggestion'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Template suggestion'),
-      '#description' => $this->t('Provide a custom suffix for a block template suggestion'),
+      '#description' => $this->t('Provide a custom suffix for a block template suggestion. Alphanumeric and underscores only.'),
       '#required' => false,
       '#default_value' => isset($config['template_suggestion']) ? $config['template_suggestion'] : '',
     ];
@@ -105,7 +105,10 @@ class EventbriteAttendees extends BlockBase implements BlockPluginInterface
     $this->configuration['event_id'] = $form_state->getValue('event_id');
     $this->configuration['cache_response'] = $form_state->getValue('cache_response');
     $this->configuration['cache_length'] = $form_state->getValue('cache_length');
-    $this->configuration['template_suggestion'] = $form_state->getValue('template_suggestion');
+
+    // remove non-alphanumeric and non-underscores
+    $template_suggestion = preg_replace('/[^\da-z_]/i', '', $form_state->getValue('template_suggestion'));
+    $this->configuration['template_suggestion'] = $template_suggestion;
   }
 
   /**
