@@ -13,7 +13,7 @@ class Api {
    * @param array $query
    * @return array
    */
-  public static function getEventAttendees($event_id, $query = [ 'page' => 1 ])
+  public static function getEventAttendees($event_id, $query = [ 'page' => 1, 'status' => 'attending' ])
   {
     $response = self::query("events/{$event_id}/attendees", $query);
 
@@ -28,7 +28,8 @@ class Api {
     // recurse for pagination
     if ($data['pagination']['page_number'] < $data['pagination']['page_count']){
       $attendees = array_merge($attendees, self::getEventAttendees($event_id, [
-        'page' => $data['pagination']['page_number'] + 1
+        'page' => $data['pagination']['page_number'] + 1,
+		'status' => 'attending',
       ]));
     }
 
