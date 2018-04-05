@@ -1,6 +1,20 @@
 eventbrite_attendees.admin:
-  title: 'Eventbrite Attendees settings'
-  description: 'Manage Eventbrite Attendees settings for your site'
+  title: 'Eventbrite Attendees'
+  description: 'Manage Eventbrite Attendees module'
   parent: system.admin_config_services
-  route_name: eventbrite_attendees.settings
+  route_name: eventbrite_attendees.settings_form
+  menu_name: admin
+
+eventbrite_attendees.settings:
+  title: 'Settings'
+  description: 'Global Eventbrite Attendees settings for your site'
+  parent: eventbrite_attendees.admin
+  route_name: eventbrite_attendees.settings_form
+  menu_name: admin
+
+eventbrite_attendees.api_test:
+  title: 'Test'
+  description: 'Test the module settings'
+  parent: eventbrite_attendees.admin
+  route_name: eventbrite_attendees.api_test_form
   menu_name: admin

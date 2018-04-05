@@ -1,0 +1,6 @@
+services:
+  eventbrite_attendees.api_client:
+    class: Drupal\eventbrite_attendees\Eventbrite\ApiClient
+    arguments:
+      - '@http_client_factory'
+      - '@config.factory'

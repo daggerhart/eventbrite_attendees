@@ -3,9 +3,8 @@ namespace Drupal\eventbrite_attendees\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\eventbrite_attendees\Eventbrite;
 
-class settingsForm extends ConfigFormBase {
+class Settings extends ConfigFormBase {
   /**
    * {@inheritdoc}
    */
@@ -51,10 +50,11 @@ class settingsForm extends ConfigFormBase {
   /**
    * {@inheritdoc}
    */
-  public function validateForm(array &$form, FormStateInterface $form_state)
-  {
-    $valid = Eventbrite\Api::testOauthToken($form_state->getValue('eventbrite_attendees_oauth_token'));
+  public function validateForm(array &$form, FormStateInterface $form_state) {
+    $api_client = \Drupal::service('eventbrite_attendees.api_client');
+    $api_client->setToken($form_state->getValue('eventbrite_attendees_oauth_token'));
 
+    $valid = !empty($api_client->getUserMe());
     if ( !$valid ) {
       $form_state->setErrorByName(
         'eventbrite_attendees_oauth_token',
@@ -65,8 +65,7 @@ class settingsForm extends ConfigFormBase {
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, FormStateInterface $form_state)
-  {
+  public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->config('eventbrite_attendees.settings')
       ->set('oauth_token', $form_state->getValue('eventbrite_attendees_oauth_token'))
       ->save();

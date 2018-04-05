@@ -5,7 +5,6 @@ namespace Drupal\eventbrite_attendees\Plugin\Block;
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Block\BlockPluginInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\eventbrite_attendees\Eventbrite;
 
 /**
  * Provides a Eventbrite attendees list Block.
@@ -51,7 +50,7 @@ class EventbriteAttendees extends BlockBase implements BlockPluginInterface
     $form['event_id'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Eventbrite event ID'),
-      '#description' => $this->t('Provide a specific Eventbrite event ID, or a token from current node being viewed.'),
+      '#description' => $this->t(''),
       '#required' => TRUE,
       '#default_value' => isset($config['event_id']) ? $config['event_id'] : '',
     ];
@@ -75,21 +74,21 @@ class EventbriteAttendees extends BlockBase implements BlockPluginInterface
 
     $form['cache_length'] = [
       '#type' => 'select',
-      '#title' => $this->t('Cache JSON response time length'),
+      '#title' => $this->t('Cache JSON response time lenth'),
       '#description' => $this->t('If this event is over, there is no need to continue querying against the API.'),
       '#default_value' => !empty($config['cache_length']) ? $config['cache_length']: -1,
       '#options' => [
-        -1 => 'Forever',
-        1800 => '30 minutes',
-        3600 => '1 hour',
-        3600 * 24 => '1 day',
+        -1 => $this->t('Forever'),
+        1800 => $this->t('30 minutes'),
+        3600 => $this->t('1 hour'),
+        3600 * 24 => $this->t('1 day'),
       ],
     ];
 
     $form['template_suggestion'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Template suggestion'),
-      '#description' => $this->t('Provide a custom suffix for a block template suggestion. Alphanumeric and underscores only.'),
+      '#description' => $this->t('Provide a custom suffix for a block template suggestion'),
       '#required' => false,
       '#default_value' => isset($config['template_suggestion']) ? $config['template_suggestion'] : '',
     ];
@@ -105,10 +104,7 @@ class EventbriteAttendees extends BlockBase implements BlockPluginInterface
     $this->configuration['event_id'] = $form_state->getValue('event_id');
     $this->configuration['cache_response'] = $form_state->getValue('cache_response');
     $this->configuration['cache_length'] = $form_state->getValue('cache_length');
-
-    // remove non-alphanumeric and non-underscores
-    $template_suggestion = preg_replace('/[^\da-z_]/i', '', $form_state->getValue('template_suggestion'));
-    $this->configuration['template_suggestion'] = $template_suggestion;
+    $this->configuration['template_suggestion'] = $form_state->getValue('template_suggestion');
   }
 
   /**
@@ -141,7 +137,8 @@ class EventbriteAttendees extends BlockBase implements BlockPluginInterface
       }
     }
 
-    $attendees = Eventbrite\Api::getEventAttendees($event_id);
+    $api_client = \Drupal::service('eventbrite_attendees.api_client');
+    $attendees = $api_client->getEventAttendees($event_id);
 
     if ($do_cache){
       \Drupal::cache()->set($cache_key, $attendees, $config['cache_length']);

@@ -1,0 +1,6 @@
+<?php
+
+/**
+ * Clear caches.
+ */
+function eventbrite_attendees_update_8001() {}

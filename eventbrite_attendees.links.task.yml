@@ -1,0 +1,9 @@
+eventbrite_attendees.settings:
+  route_name: eventbrite_attendees.settings_form
+  title: Settings
+  base_route: eventbrite_attendees.settings_form
+
+eventbrite_attendees.api_test:
+  route_name: eventbrite_attendees.api_test_form
+  title: Test
+  base_route: eventbrite_attendees.settings_form
