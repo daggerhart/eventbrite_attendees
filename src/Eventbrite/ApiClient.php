@@ -151,7 +151,7 @@ class ApiClient {
     $data = Json::decode($response->getBody());
     $pages[$page] = $data;
 
-    if ($data['pagination']['page_number'] < $data['pagination']['page_count']) {
+    if ($data['pagination']['has_more_items'] && $data['pagination']['page_number'] < $data['pagination']['page_count']) {
       $pages += $this->getPaginatedData($endpoint, $options, $page + 1);
     }
 
@@ -174,6 +174,22 @@ class ApiClient {
     ]));
 
     return array_merge(...array_column($pages, 'attendees'));
+  }
+
+  /**
+   * Get an array of all custom questions to an event id.
+   * https://www.eventbrite.com/developer/v3/endpoints/events/#ebapi-get-events-id-questions
+   *
+   * @param string $event_id
+   *   Eventbrite event id.
+   *
+   * @return array
+   *   Array of attendees data.
+   */
+  public function getEventQuestions($event_id) {
+    $pages = $this->getPaginatedData("events/{$event_id}/questions", $this->requestOptions([]));
+
+    return array_merge(...array_column($pages, 'questions'));
   }
 
   /**

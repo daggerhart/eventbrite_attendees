@@ -37,25 +37,46 @@ class ApiTest extends FormBase {
       '#title' => $this->t('Event ID'),
     ];
 
-    $form['test_api'] = [
+    $form['attendees_query'] = [
       '#type' => 'button',
-      '#value' => $this->t('Test Attendees Query'),
+      '#value' => $this->t('Get Attendees Data'),
       '#ajax' => [
         'callback' => '::doAttendeesQuery',
         'event' => 'click',
         'wrapper' => 'eventbrite-test-query',
       ],
     ];
-
-    $form['results'] = [
-      '#markup' => '
-        <div id="eventbrite-test-query">
-          <strong>Effective URIs:</strong>
-          <pre class="eventbrite-test-effective-uris"></pre>
-          <hr>
-          <strong>Results:</strong>
-          <pre class="eventbrite-test-query-attendees"></pre>
-        </div>',
+    $form['questions_query'] = [
+      '#type' => 'button',
+      '#value' => $this->t('Get Custom Questions'),
+      '#ajax' => [
+        'callback' => '::doQuestionsQuery',
+        'event' => 'click',
+        'wrapper' => 'eventbrite-test-query',
+      ],
+    ];
+    $form['results_wrapper'] = [
+      '#type' => 'fieldset',
+      '#title' => $this->t('Results'),
+      '#attributes' => [
+        'id' => 'eventbrite-test-query',
+      ],
+      'effective_uris' => [
+        '#type' => 'html_tag',
+        '#tag' => 'pre',
+        '#prefix' => '<strong>' . $this->t('Effective URIs') . '</strong>',
+        '#attributes' => [
+          'class' => ['eventbrite-test-effective-uris']
+        ]
+      ],
+      'data' => [
+        '#type' => 'html_tag',
+        '#tag' => 'pre',
+        '#prefix' => '<strong>' . $this->t('Data') . '</strong>',
+        '#attributes' => [
+          'class' => ['eventbrite-test-data']
+        ]
+      ],
     ];
 
     return $form;
@@ -76,7 +97,26 @@ class ApiTest extends FormBase {
 
     $response = new AjaxResponse();
     $response->addCommand(new HtmlCommand('.eventbrite-test-effective-uris', implode("\n", $api_client->effectiveUris)));
-    $response->addCommand(new HtmlCommand('.eventbrite-test-query-attendees', json_encode($attendees, JSON_PRETTY_PRINT)));
+    $response->addCommand(new HtmlCommand('.eventbrite-test-data', json_encode($attendees, JSON_PRETTY_PRINT)));
+    return $response;
+  }
+
+  /**
+   * Call the Eventbrite API for custom questions of the given event id.
+   *
+   * @param array $form
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *
+   * @return \Drupal\Core\Ajax\AjaxResponse
+   */
+  public function doQuestionsQuery(array $form, FormStateInterface $form_state) {
+    $api_client = \Drupal::service('eventbrite_attendees.api_client');
+    $event_id = $form_state->getValue('event_id');
+    $attendees = $api_client->getEventQuestions($event_id);
+
+    $response = new AjaxResponse();
+    $response->addCommand(new HtmlCommand('.eventbrite-test-effective-uris', implode("\n", $api_client->effectiveUris)));
+    $response->addCommand(new HtmlCommand('.eventbrite-test-data', json_encode($attendees, JSON_PRETTY_PRINT)));
     return $response;
   }
 
